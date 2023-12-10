@@ -1,0 +1,23 @@
+#!/bin/sh
+cd "${0%/*}" || exit                                # Run from this directory
+. ${WM_PROJECT_DIR:?}/bin/tools/RunFunctions        # Tutorial run functions
+#------------------------------------------------------------------------------
+
+cp -r 0.orig 0
+
+runApplication blockMesh
+
+# runApplication foamRun
+
+runApplication decomposePar #For parallel
+
+runApplication mpirun -np 4 foamRun -parallel
+
+runApplication reconstructPar
+
+runApplication foamPostProcess -solver fluid -func wallHeatFlux
+#/runApplication setFields
+
+#runApplication $(getApplication)
+
+#------------------------------------------------------------------------------
